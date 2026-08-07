@@ -1,3 +1,14 @@
-.vs/
+# CMake build output
+build/
 bin/
-obj/
+out/
+
+# vcpkg installed packages (vcpkg pobierze je sam podczas kompilacji)
+vcpkg/installed/
+vcpkg/buildtrees/
+vcpkg/packages/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo

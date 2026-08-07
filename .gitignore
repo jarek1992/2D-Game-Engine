@@ -1,7 +1,11 @@
-# CMake build output
+# build and IDE specific
 build/
-bin/
 out/
+.vs/
+.vscode/
+bin/
+obj/
+vcpkg_installed/
 
 # vcpkg installed packages (vcpkg pobierze je sam podczas kompilacji)
 vcpkg/installed/

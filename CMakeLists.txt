@@ -18,6 +18,7 @@ find_package(imgui CONFIG REQUIRED)
 # Source files (to be updated)
 add_executable(${PROJECT_NAME}
 	src/main.cpp
+    src/game.cpp
     libs/imgui_backend/imgui_impl_sdl2.cpp
     libs/imgui_backend/imgui_impl_sdlrenderer2.cpp
 )

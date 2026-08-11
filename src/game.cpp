@@ -20,18 +20,17 @@ void Game::Initialize() {
 		return;
 	}
 
-	//// Get the current display mode to determine the screen resolution
-	//SDL_DisplayMode displayMode;
-	//SDL_GetCurrentDisplayMode(0, &displayMode);
-	//windowWidth = displayMode.w;
-	//windowHeight = displayMode.h;
-
+	// Get the current display mode to determine the screen resolution
+	SDL_DisplayMode displayMode;
+	SDL_GetCurrentDisplayMode(0, &displayMode);
+	windowWidth = 800;
+	windowHeight = 600;
 	window = SDL_CreateWindow(
 		NULL, 
 		SDL_WINDOWPOS_CENTERED, 
 		SDL_WINDOWPOS_CENTERED, 
-		800,
-		600,
+		windowWidth,
+		windowHeight,
 		SDL_WINDOW_BORDERLESS
 	);
 	if (!window) {
@@ -39,11 +38,25 @@ void Game::Initialize() {
 		return;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	Uint32 preffed_flags[] = { 
+		SDL_RENDERER_ACCELERATED, SDL_RENDERER_PRESENTVSYNC, // 1. GPU + V-Sync
+		SDL_RENDERER_ACCELERATED, // 2. GPU only
+		0 // 3. Fallback use whatever works
+	};
+
+	for(Uint32 flags : preffed_flags) {
+		renderer = SDL_CreateRenderer(window, -1, flags);
+		if(renderer) {
+			break;
+		}
+	}
 	if (!renderer) {
-		std::cerr << "Error creating SDL renderer" << std::endl;
+		std::cerr << "Error creating SDL renderer: " << SDL_GetError() << std::endl;
 		return;
 	}
+
+	// Set the window to fullscreen mode
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	isRunning = true;
 }

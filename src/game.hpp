@@ -18,7 +18,7 @@ public:
 	void Update();
 	void Render();
 	void Destroy();
-//
-//	int windowWidth;
-//	int windowHeight;
+
+	int windowWidth;
+	int windowHeight;
 };

@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 Game::Game() {
 	// Constructor implementation
@@ -63,6 +64,7 @@ void Game::Initialize() {
 
 void Game::Run() {
 	// Main game loop
+	Setup();
 	while (isRunning) {
 		ProcessInput();
 		Update();
@@ -87,16 +89,27 @@ void Game::ProcessInput() {
 	}
 }
 
+void Game::Setup() {
+	// Set up game objects, load resources, etc.
+}
+
 void Game::Update() {
 	// Update game state (physics, AI, etc.)
 }
 
 void Game::Render() {
 	// Render the game scene
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	// Render game objects here ... 
+	// Draw PNG texture
+	SDL_Surface* surface = IMG_Load("libs/assets/tank_top.png");
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	
+	SDL_Rect destRect = {10, 10, 32, 32};
+	SDL_RenderCopy(renderer, texture, NULL, &destRect);
+	SDL_DestroyTexture(texture);
 
 	SDL_RenderPresent(renderer);
 }

@@ -95,14 +95,26 @@ glm::vec2 playerVel;
 
 void Game::Setup() {
 	// Set up game objects, load resources, etc.
-	playerPost = glm::vec2(5.0, 5.0);
-	playerVel = glm::vec2(0.1, 0.0);
+	playerPost = glm::vec2(50.0, 50.0);
+	playerVel = glm::vec2(0.0, 30.0);
 }
 
 void Game::Update() {
 	// Update game state (physics, AI, etc.)
-	playerPost.x += playerVel.x; // Move the player to the right
-	playerPost.y += playerVel.y; // Move the player down
+
+	int timeToWait = milisecsPerFrame - (SDL_GetTicks() - millisecsPrevFrame);
+	if (timeToWait > 0 && timeToWait <= milisecsPerFrame) {
+		SDL_Delay(timeToWait);
+	}
+
+	// Difference in ticks since the last frame, converted to seconds (delta time)
+	double deltaTime = (SDL_GetTicks() - millisecsPrevFrame) / 1000.0; // Convert milliseconds to seconds
+
+	// Calculate the time elapsed since the last frame
+	millisecsPrevFrame = SDL_GetTicks();
+
+	playerPost.x += playerVel.x * deltaTime; // Move the player to the right
+	playerPost.y += playerVel.y * deltaTime; // Move the player down
 }
 
 void Game::Render() {
@@ -122,7 +134,6 @@ void Game::Render() {
 		32, 
 		32
 	};
-
 	SDL_RenderCopy(renderer, texture, NULL, &destRect);
 	SDL_DestroyTexture(texture);
 

@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "logger.hpp"
 
 int main(int argc, char* argv[]) {
 	Game game;

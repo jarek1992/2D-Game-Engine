@@ -19,6 +19,7 @@ find_package(imgui CONFIG REQUIRED)
 add_executable(${PROJECT_NAME}
 	src/main.cpp
     src/game.cpp
+    src/logger.cpp
     libs/imgui_backend/imgui_impl_sdl2.cpp
     libs/imgui_backend/imgui_impl_sdlrenderer2.cpp
 )

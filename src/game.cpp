@@ -1,4 +1,6 @@
 #include "game.hpp"
+#include "logger.hpp"
+
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -7,18 +9,18 @@
 Game::Game() {
 	// Constructor implementation
 	isRunning = false;
-	std::cout << "Game object created." << std::endl;
+	Logger::Log("Game object created!");
 }
 
 Game::~Game() {
 	// Destructor implementation
-	std::cout << "Game object destroyed." << std::endl;
+	Logger::Log("Game object destroyed!");
 }
 
 void Game::Initialize() {
 	// Initialize SDL, create window and renderer, load resources, etc. 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-		std::cerr << "SDL_Init Error: " << std::endl;
+		Logger::Err("SDL_Init Error.");
 		return;
 	}
 
@@ -36,7 +38,7 @@ void Game::Initialize() {
 		SDL_WINDOW_BORDERLESS
 	);
 	if (!window) {
-		std::cerr << "Error initializing SDL window" << std::endl;
+		Logger::Err("Error initializing SDL window");
 		return;
 	}
 
@@ -53,7 +55,7 @@ void Game::Initialize() {
 		}
 	}
 	if (!renderer) {
-		std::cerr << "Error creating SDL renderer: " << SDL_GetError() << std::endl;
+		Logger::Err("Error creating SDL renderer");
 		return;
 	}
 

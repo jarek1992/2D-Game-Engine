@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "logger.hpp"
+#include "ecs.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -92,13 +93,8 @@ void Game::ProcessInput() {
 	}
 }
 
-glm::vec2 playerPost;
-glm::vec2 playerVel;
-
 void Game::Setup() {
-	// Set up game objects, load resources, etc.
-	playerPost = glm::vec2(50.0, 50.0);
-	playerVel = glm::vec2(0.0, 30.0);
+	//TODO:...
 }
 
 void Game::Update() {
@@ -115,8 +111,10 @@ void Game::Update() {
 	// Calculate the time elapsed since the last frame
 	millisecsPrevFrame = SDL_GetTicks();
 
-	playerPost.x += playerVel.x * deltaTime; // Move the player to the right
-	playerPost.y += playerVel.y * deltaTime; // Move the player down
+	//movement system
+	//movementSystem.Update();
+	//collisionSystem.Update();
+	//damageSystem.Update();
 }
 
 void Game::Render() {
@@ -124,20 +122,7 @@ void Game::Render() {
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	// Draw PNG texture
-	// Tank
-	SDL_Surface* surface = IMG_Load("libs/assets/tank_top.png");
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-
-	SDL_Rect destRect = {
-		static_cast<int>(playerPost.x), 
-		static_cast<int>(playerPost.y),
-		32, 
-		32
-	};
-	SDL_RenderCopy(renderer, texture, NULL, &destRect);
-	SDL_DestroyTexture(texture);
+	//TODO: render game system
 
 	SDL_RenderPresent(renderer);
 }

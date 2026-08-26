@@ -5,5 +5,5 @@
 struct transformComponent {
 	glm::vec2 postition;
 	glm::vec2 scale;
-	double rotation
+	double rotation;
 };

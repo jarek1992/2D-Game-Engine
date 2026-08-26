@@ -22,7 +22,7 @@ add_executable(${PROJECT_NAME}
     src/logger.cpp
     libs/imgui_backend/imgui_impl_sdl2.cpp
     libs/imgui_backend/imgui_impl_sdlrenderer2.cpp
- "src/transformComponent.cpp")
+ "src/transformComponent.cpp" "src/ecs.cpp")
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE

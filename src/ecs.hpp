@@ -2,6 +2,8 @@
 
 #include <bitset>
 #include <vector>
+#include <unordered_map>
+#include <typeindex>
 
 const unsigned int MAX_COMPONENTS = 32;
 
@@ -119,19 +121,28 @@ class Registry {
 		int numEntities = 0;
 
 		// Vector of component pools, where each pool contains all the data for the certain component type.
-		// Vector index == component type ID
-		// Pool index == entity ID
+		// [Vector index == component type ID]
+		// [Pool index == entity ID]
 		std::vector<iPool*> componentPools;
 
+		// Vector of component signatures per entity, saying which components each entity has.
+		// [Vector index == entity ID]
+		std::vector<Signature> entityComponentSignatures;
+
+		std::unordered_map<std::type_index, System*> systems;
+
 	public:
-		//Registry() = default;
-		//~Registry() = default;
+		Registry() = default;
+		~Registry() = default;
 
 		//Entity createEntity();
 		//void destroyEntity(Entity entity);
 		//void addComponentToEntity(Entity entity, int componentId);
 		//void removeComponentFromEntity(Entity entity, int componentId);
+		//void hasComponent(Entity entity, int componentId) const;
 		//const Signature& getEntitySignature(Entity entity) const;
+
+		//addSystem, removeSystem, hasSystem, getSystem, etc.
 };
 
 template<typename tComponent>

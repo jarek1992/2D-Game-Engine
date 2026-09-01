@@ -20,9 +20,11 @@ add_executable(${PROJECT_NAME}
 	src/main.cpp
     src/game.cpp
     src/logger.cpp
+    src/transformComponent.cpp
+    src/ecs.cpp
     libs/imgui_backend/imgui_impl_sdl2.cpp
     libs/imgui_backend/imgui_impl_sdlrenderer2.cpp
- "src/transformComponent.cpp" "src/ecs.cpp")
+)
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE

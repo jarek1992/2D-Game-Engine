@@ -1,4 +1,5 @@
 #include "ecs.hpp"
+#include "logger.hpp"
 
 int Entity::getId() const {
 	return id;
@@ -23,4 +24,17 @@ const Signature& System::getComponentSignature() const {
 	return componentSignature;
 };
 
+Entity Registry::createEntity() {
+	int entityId;
+
+	entityId = numEntities++;
+	Entity entity(entityId);
+	entitiesToAdd.insert(entity);
+
+	Logger::Log("Entity created with ID: " + entityId);
+
+	return entity;
+
+
+};
 

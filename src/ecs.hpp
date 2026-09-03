@@ -138,10 +138,16 @@ class Registry {
 
 	public:
 		Registry() = default;
-		~Registry() = default;
 
+		// The registry Update() finally processes the entities that are flagged to be added or removed, and updates the systems accordingly.
 		void Update();
+
+		// Entity management functions
 		Entity createEntity();
+
+		//Component management functions
+		template <typename TComponent, typename ...TArgs> void addComponent(Entity entity, TArgs&& ...args);
+
 		void addEntityToSystem(Entity entity);
 
 
@@ -160,4 +166,13 @@ void System::requireComponent() {
 	const auto componentId = Component<tComponent>::getId();
 	// Set the bit corresponding to the component type T in the component signature.
 	componentSignature.set(componentId);
+}
+
+template <typename TComponent, typename ...TArgs> 
+void Registry::addComponent(Entity entity, TArgs&& ...args) {
+	const auto componentId = Component<TComponent>::getId();
+	const auto entityId = entity.getId();
+
+
+	TComponent newComponent(std::forward<TArgs>(args)...);
 }

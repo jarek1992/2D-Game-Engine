@@ -149,6 +149,12 @@ class Registry {
 		template <typename TComponent, typename ...TArgs> void addComponent(Entity entity, TArgs&& ...args);
 		template <typename TComponent> void removeComponent(Entity entity);
 		template <typename TComponent> bool hasComponent(Entity entity) const;
+
+		// System management functions
+		template <typename TSystem, typename ...TArgs> void addSystem(TArgs&& ... args);
+		template <typename TSystem> void removeSuste();
+		template <typename TSystem> bool hasSystem() const;
+		template <typename TSystem> TSystem& getSystem() const;
 };
 
 template<typename tComponent>
@@ -157,6 +163,13 @@ void System::requireComponent() {
 	// Set the bit corresponding to the component type T in the component signature.
 	componentSignature.set(componentId);
 }
+
+template <typename TSystem, typename ...TArgs> 
+void Registry::addSystem(TArgs&& ... args) {
+	TSystem* newSystem(new TSystem(std::forward<TArgs>(args)...));
+	systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
+}
+
 
 template <typename TComponent, typename ...TArgs> 
 void Registry::addComponent(Entity entity, TArgs&& ...args) {

@@ -147,18 +147,8 @@ class Registry {
 
 		//Component management functions
 		template <typename TComponent, typename ...TArgs> void addComponent(Entity entity, TArgs&& ...args);
-
-		void addEntityToSystem(Entity entity);
-
-
-
-		//void destroyEntity(Entity entity);
-
-		//void removeComponentFromEntity(Entity entity, int componentId);
-		//void hasComponent(Entity entity, int componentId) const;
-		//const Signature& getEntitySignature(Entity entity) const;
-
-		//addSystem, removeSystem, hasSystem, getSystem, etc.
+		template <typename TComponent> void removeComponent(Entity entity);
+		template <typename TComponent> bool hasComponent(Entity entity) const;
 };
 
 template<typename tComponent>
@@ -170,26 +160,50 @@ void System::requireComponent() {
 
 template <typename TComponent, typename ...TArgs> 
 void Registry::addComponent(Entity entity, TArgs&& ...args) {
+	// Get the unique ID for the component type TComponent and the entity ID.
 	const auto componentId = Component<TComponent>::getId();
 	const auto entityId = entity.getId();
 
+	// Ensure that the componentPools vector is large enough to hold a pool for this component type.
 	if (componentId >= componentPools.size()) {
 		componentPools.resize(componentId + 1, nullptr);
 	}
 
+	// Ensure that the entityComponentSignatures vector is large enough to hold a signature for this entity.
 	if (!componentPools[componentId]) {
 		Pool<TComponent>* newComponentPool = new Pool<TComponent>();
 		componentPools[componentId] = newComponentPool;
 	}
 
+	// Get the component pool for this component type.
 	Pool<TComponent>* componentPool = componentPools[componentId];
 
+	// Ensure that the component pool is large enough to hold a component for this entity.
 	if (entityId >= componentPool->getSize()) {
 		componentPool->resize(numEntities);
 	}
 
+	// Crete a new component of type TComponent using the provided arguments.
 	TComponent newComponent(std::forward<TArgs>(args)...);
 
+	// Set the component for this entity in the component pool and update the entity's signature to reflect that it now has this component.
 	componentPool->set(entityId, newComponent);
+	// Turn on the bit corresponding to the component type TComponent in the entity's signature.
 	entityComponentSignatures[entityId].set(componentId);
+}
+
+template <typename TComponent>
+void Registry::removeComponent(Entity entity) {
+	const auto componentId = Component<TComponent>::getId();
+	const auto entityId = entity.getId();
+
+	entityComponentSignatures[entityId].set(componentId, false);
+}
+
+template <typename TComponent>
+bool Registry::hasComponent(Entity entity) const {
+	const auto componentId = Component<TComponent>::getId();
+	const auto entityId = entity.getId();
+
+	return entityComponentSignatures[entityId].test(componentId);
 }

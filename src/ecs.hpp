@@ -152,9 +152,12 @@ class Registry {
 
 		// System management functions
 		template <typename TSystem, typename ...TArgs> void addSystem(TArgs&& ... args);
-		template <typename TSystem> void removeSuste();
+		template <typename TSystem> void removeSystem();
 		template <typename TSystem> bool hasSystem() const;
 		template <typename TSystem> TSystem& getSystem() const;
+
+		// Helper function to add an entity to all systems that it qualifies for based on its component signature.
+		void addEntityToSystems(Entity entity);
 };
 
 template<typename tComponent>
@@ -170,6 +173,22 @@ void Registry::addSystem(TArgs&& ... args) {
 	systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 }
 
+template <typename TSystem> 
+void Registry::removeSystem() {
+	auto system = systems.find(std::type_index(typeid(TSystem)));
+	systems.erase(system);
+}
+
+template <typename TSystem> 
+bool Registry::hasSystem() const {
+	return systems.find(std::type_index(typeid(TSystem))) != systems.end();
+}
+
+template <typename TSystem> 
+TSystem& Registry::getSystem() const {
+	auto system = systems.find(std::type_index(typeid(TSystem)));
+	return *(std::static_pointer_cast<TSystem>(system->second));
+}
 
 template <typename TComponent, typename ...TArgs> 
 void Registry::addComponent(Entity entity, TArgs&& ...args) {

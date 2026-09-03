@@ -38,6 +38,22 @@ Entity Registry::createEntity() {
 	return entity;
 }
 
+void Registry::addEntityToSystems(Entity entity) {
+	const auto entityId = entity.getId();
+
+	const auto& entityComponentSignature = entityComponentSignatures[entityId];
+
+	// Loop through all systems and check if the entity's component signature matches the system's component signature
+	for (auto& system : systems) {
+		const auto& systemComponentSignature = system.second->getComponentSignature();
+
+		bool isMatched = (entityComponentSignature & systemComponentSignature) == systemComponentSignature;
+
+		if (isMatched) {
+			system.second->addEntityToSystem(entity);
+		}
+}
+
 void Registry::Update() {
 
 }

@@ -173,6 +173,23 @@ void Registry::addComponent(Entity entity, TArgs&& ...args) {
 	const auto componentId = Component<TComponent>::getId();
 	const auto entityId = entity.getId();
 
+	if (componentId >= componentPools.size()) {
+		componentPools.resize(componentId + 1, nullptr);
+	}
+
+	if (!componentPools[componentId]) {
+		Pool<TComponent>* newComponentPool = new Pool<TComponent>();
+		componentPools[componentId] = newComponentPool;
+	}
+
+	Pool<TComponent>* componentPool = componentPools[componentId];
+
+	if (entityId >= componentPool->getSize()) {
+		componentPool->resize(numEntities);
+	}
 
 	TComponent newComponent(std::forward<TArgs>(args)...);
+
+	componentPool->set(entityId, newComponent);
+	entityComponentSignatures[entityId].set(componentId);
 }

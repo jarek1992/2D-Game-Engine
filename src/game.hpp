@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include "ecs.hpp"
 
 const int fps = 2;
 const  int milisecsPerFrame = 1000 / fps ;
@@ -11,6 +12,9 @@ private:
 	int millisecsPrevFrame = 0;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+
+	Registry* registry;
+
 
 public:
 	Game();

@@ -10,6 +10,7 @@
 Game::Game() {
 	// Constructor implementation
 	isRunning = false;
+	registry = new Registry();
 	Logger::Log("Game object created!");
 }
 
@@ -94,7 +95,10 @@ void Game::ProcessInput() {
 }
 
 void Game::Setup() {
-	//TODO:...
+	// Create entities and add components to them
+	Entity tank = registry->createEntity();
+	Entity helicopter = registry->createEntity();
+
 }
 
 void Game::Update() {

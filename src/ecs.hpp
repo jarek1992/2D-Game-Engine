@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <set>
+#include <memory>
 
 const unsigned int MAX_COMPONENTS = 32;
 
@@ -36,9 +37,20 @@ class Entity {
 		int getId() const;
 
 		// Overload the equality operator to compare entities based on their IDs.
-		bool operator ==(const Entity& other) const {
-			return id == other.id;
+		Entity& operator =(const Entity& other) = default;
+		bool operator ==(const Entity& other) const { 
+			return id == other.id; 
 		}
+		bool operator !=(const Entity& other) const { 
+			return id != other.id; 
+		}
+		bool operator >(const Entity& other) const { 
+			return id > other.id; 
+		}
+		bool operator <(const Entity& other) const { 
+			return id < other.id; 
+		}
+
 };
 
 // SYSTEM

@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     src/game.cpp
     src/logger.cpp
     src/transformComponent.cpp
+    src/rigidBodyComponent.cpp
     src/ecs.cpp
     libs/imgui_backend/imgui_impl_sdl2.cpp
     libs/imgui_backend/imgui_impl_sdlrenderer2.cpp

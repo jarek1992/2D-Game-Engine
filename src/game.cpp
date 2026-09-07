@@ -1,6 +1,8 @@
 #include "game.hpp"
 #include "logger.hpp"
 #include "ecs.hpp"
+#include "transformComponent.hpp"
+#include "rigidBodyComponent.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -10,7 +12,8 @@
 Game::Game() {
 	// Constructor implementation
 	isRunning = false;
-	registry = new Registry();
+	registry = std::make_unique<Registry>();
+
 	Logger::Log("Game object created!");
 }
 
@@ -97,8 +100,10 @@ void Game::ProcessInput() {
 void Game::Setup() {
 	// Create entities and add components to them
 	Entity tank = registry->createEntity();
-	Entity helicopter = registry->createEntity();
 
+	// Add some components to the tank entity (e.g., position, sprite, etc.)
+	registry->addComponent<transformComponent>(tank, glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	registry->addComponent<rigidBodyComponent>(tank, glm::vec2(20.0, 0.0));
 }
 
 void Game::Update() {

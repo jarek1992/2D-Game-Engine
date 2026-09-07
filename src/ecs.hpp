@@ -84,7 +84,7 @@ class iPool {
 // POOL
 // A pool is just a vector (contiguous data) of objects of type T.
 template <typename T>
-class Pool: iPool {
+class Pool: public iPool {
 	private:
 		std::vector<T> data; // Vector of pointers to component data
 
@@ -190,7 +190,7 @@ void System::requireComponent() {
 template <typename TSystem, typename ...TArgs> 
 void Registry::addSystem(TArgs&& ... args) {
 
-	std::shared_ptr<TSystem> new System = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
+	std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
 	systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 }
 
@@ -244,7 +244,7 @@ void Registry::addComponent(Entity entity, TArgs&& ...args) {
 	// Turn on the bit corresponding to the component type TComponent in the entity's signature.
 	entityComponentSignatures[entityId].set(componentId);
 
-	Logger::Log("Added component of type " + std::string(componentId) + " to entity ID  " + std::to_string(entityId));
+	Logger::Log("Added component of type " + std::to_string(componentId) + " to entity ID  " + std::to_string(entityId));
 }
 
 template <typename TComponent>

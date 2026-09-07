@@ -37,6 +37,7 @@ class Entity {
 		int id;
 	public:
 		Entity(int id) : id(id) {};
+		Entity(const Entity& entity) = default;
 		int getId() const;
 
 		// Overload the equality operator to compare entities based on their IDs.
@@ -54,6 +55,13 @@ class Entity {
 			return id < other.id; 
 		}
 
+		template <typename TComponent, typename ...TArgs> void addComponent(TArgs&& ...args);
+		template <typename TComponent> void removeComponent();
+		template <typename TComponent> bool hasComponent() const;
+		template <typename TComponent> TComponent& getComponent() const;
+
+		// Overload the stream insertion operator to print the entity ID.
+		class Registry* registry;
 };
 
 // SYSTEM
@@ -169,6 +177,7 @@ class Registry {
 		template <typename TComponent, typename ...TArgs> void addComponent(Entity entity, TArgs&& ...args);
 		template <typename TComponent> void removeComponent(Entity entity);
 		template <typename TComponent> bool hasComponent(Entity entity) const;
+		template <typename TComponent> TComponent& getComponent(Entity entity) const;
 
 		// System management functions
 		template <typename TSystem, typename ...TArgs> void addSystem(TArgs&& ... args);
@@ -261,4 +270,33 @@ bool Registry::hasComponent(Entity entity) const {
 	const auto entityId = entity.getId();
 
 	return entityComponentSignatures[entityId].test(componentId);
+}
+
+template <typename TComponent>
+TComponent& Registry::getComponent(Entity entity) const {
+	const auto componentId = Component<TComponent>::getId();
+	const auto entityId = entity.getId();
+
+	auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
+	return componentPool->get(entityId);
+}
+
+template <typename TComponent, typename ...TArgs>
+void Entity::addComponent(TArgs&& ...args) {
+	//...
+}
+
+template <typename TComponent>
+void Entity::removeComponent() {
+	//...
+}
+
+template <typename TComponent>
+bool Entity::hasComponent() const {
+	//...
+}
+
+template <typename TComponent>
+TComponent& Entity::getComponent() const {
+	//...
 }

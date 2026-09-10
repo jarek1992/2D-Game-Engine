@@ -11,15 +11,24 @@ class movementSystem : public System {
 			requireComponent<rigidBodyComponent>();
 		}
 
-		void Update() {
+		void Update(double deltaTime) {
 			// Update all entities with a transformComponent
-			for(auto entity : getEntities()) {
+			for(auto entity : getSystemEntities()) {
 				// Update the entity's position based on its velocity
 				auto& transform = entity.getComponent<transformComponent>();
 				const auto rigidBody = entity.getComponent<rigidBodyComponent>();
 
-				transform.position.x += rigidBody.velocity.x;
-				transform.position.y += rigidBody.velocity.y;
+				transform.position.x += rigidBody.velocity.x * deltaTime;
+				transform.position.y += rigidBody.velocity.y * deltaTime;
+
+				Logger::Log(
+					"Entity Id " + 
+					std::to_string(entity.getId()) + 
+					" moved to position (" + 
+					std::to_string(transform.position.x) + 
+					", " + 
+					std::to_string(transform.position.y) + ")"
+				);
 			}
 		}
 };

@@ -102,10 +102,10 @@ void Game::Setup() {
 	Entity tank = registry->createEntity();
 
 	// Add some components to the tank entity (e.g., position, sprite, etc.)
-	//registry->addComponent<transformComponent>(tank, glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	//registry->addComponent<rigidBodyComponent>(tank, glm::vec2(20.0, 0.0));*/
-
-	tank.addComponent<transformComponent>(tank, glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.addComponent<transformComponent>(glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.addComponent<rigidBodyComponent>(glm::vec2(10.0, 15.0));
+	// Remove the component from the entity
+	tank.removeComponent<transformComponent>();
 }
 
 void Game::Update() {

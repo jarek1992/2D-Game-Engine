@@ -1,17 +1,25 @@
 #pragma once
 
+#include "ecs.hpp"
+#include "transformComponent.hpp"
+#include "rigidBodyComponent.hpp"
+
 class movementSystem : public System {
 	public:
 		movementSystem() {
-			//RequireComponent<transformComponent>();
-			//...
+			requireComponent<transformComponent>();
+			requireComponent<rigidBodyComponent>();
 		}
 
 		void Update() {
 			// Update all entities with a transformComponent
-			//for(auto entity : getEntities()) {
-			//	// Update the position based on velocity, input, etc.
-			//	// Example: transform.position += velocity * deltaTime;
-			//}
+			for(auto entity : getEntities()) {
+				// Update the entity's position based on its velocity
+				auto& transform = entity.getComponent<transformComponent>();
+				const auto rigidBody = entity.getComponent<rigidBodyComponent>();
+
+				transform.position.x += rigidBody.velocity.x;
+				transform.position.y += rigidBody.velocity.y;
+			}
 		}
 };

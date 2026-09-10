@@ -262,6 +262,7 @@ void Registry::removeComponent(Entity entity) {
 	const auto entityId = entity.getId();
 
 	entityComponentSignatures[entityId].set(componentId, false);
+	Logger::Log("Component ID " + std::to_string(componentId) + " has been removed from entity ID " + std::to_string(entityId));
 }
 
 template <typename TComponent>
@@ -283,20 +284,20 @@ TComponent& Registry::getComponent(Entity entity) const {
 
 template <typename TComponent, typename ...TArgs>
 void Entity::addComponent(TArgs&& ...args) {
-	//...
+	registry->addComponent<TComponent>(*this, std::forward<TArgs>(args)...);
 }
 
 template <typename TComponent>
 void Entity::removeComponent() {
-	//...
+	registry->removeComponent<TComponent>(*this);
 }
 
 template <typename TComponent>
 bool Entity::hasComponent() const {
-	//...
+	return registry->hasComponent<TComponent>(*this);
 }
 
 template <typename TComponent>
 TComponent& Entity::getComponent() const {
-	//...
+	return registry->getComponent<TComponent>(*this);
 }

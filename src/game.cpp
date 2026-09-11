@@ -5,6 +5,7 @@
 #include "rigidBodyComponent.hpp"
 #include "movementSystem.hpp"
 #include "spriteComponent.hpp"
+#include "renderSystem.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -106,11 +107,15 @@ void Game::Setup() {
 
 	// Create entities and add components to them
 	Entity tank = registry->createEntity();
-
-	// Add some components to the tank entity (e.g., position, sprite, etc.)
 	tank.addComponent<transformComponent>(glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.addComponent<rigidBodyComponent>(glm::vec2(10.0, 15.0));
+	tank.addComponent<rigidBodyComponent>(glm::vec2(50.0, 0.0));
 	tank.addComponent<spriteComponent>(10.0, 10.0);
+
+	// Create entities and add components to them
+	Entity helicopter = registry->createEntity();
+	helicopter.addComponent<transformComponent>(glm::vec2(20.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+	helicopter.addComponent<rigidBodyComponent>(glm::vec2(0.0, 25.0));
+	helicopter.addComponent<spriteComponent>(1.0, 30.0);
 }
 
 void Game::Update() {
@@ -127,13 +132,11 @@ void Game::Update() {
 	// Calculate the time elapsed since the last frame
 	millisecsPrevFrame = SDL_GetTicks();
 
-	// Ask all systems to update their entities
-	registry->getSystem<movementSystem>().Update(deltaTime);
-	//registry->getSystem<collisionSystem>().Update();
-
-
 	// Update the registry to process the entities that are waiting to be added/deleted to the systems
 	registry->Update();
+
+	// Invoke all the system that need to update
+	registry->getSystem<movementSystem>().Update(deltaTime);
 }
 
 void Game::Render() {
@@ -141,7 +144,8 @@ void Game::Render() {
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	//TODO: render game system
+	// Invoke all the system that need to render
+	registry->getSystem<renderSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

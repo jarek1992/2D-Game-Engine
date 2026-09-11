@@ -4,6 +4,7 @@
 #include "transformComponent.hpp"
 #include "rigidBodyComponent.hpp"
 #include "movementSystem.hpp"
+#include "spriteComponent.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -101,6 +102,7 @@ void Game::ProcessInput() {
 void Game::Setup() {
 	// Add the systems to be proccessed in the game loop
 	registry->addSystem<movementSystem>();
+	registry->addSystem<renderSystem>();
 
 	// Create entities and add components to them
 	Entity tank = registry->createEntity();
@@ -108,6 +110,7 @@ void Game::Setup() {
 	// Add some components to the tank entity (e.g., position, sprite, etc.)
 	tank.addComponent<transformComponent>(glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.addComponent<rigidBodyComponent>(glm::vec2(10.0, 15.0));
+	tank.addComponent<spriteComponent>(10.0, 10.0);
 }
 
 void Game::Update() {

@@ -20,15 +20,6 @@ class movementSystem : public System {
 
 				transform.position.x += rigidBody.velocity.x * deltaTime;
 				transform.position.y += rigidBody.velocity.y * deltaTime;
-
-				Logger::Log(
-					"Entity Id " + 
-					std::to_string(entity.getId()) + 
-					" moved to position (" + 
-					std::to_string(transform.position.x) + 
-					", " + 
-					std::to_string(transform.position.y) + ")"
-				);
 			}
 		}
 };

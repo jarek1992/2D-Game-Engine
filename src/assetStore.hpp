@@ -15,6 +15,6 @@ class assetStore {
 		~assetStore();
 
 		void clearAssets();
-		void addexture(const std::string& assetId, const std::string& filePath);
+		void addTexture(const std::string& assetId, const std::string& filePath);
 		SDL_Texture* getTexture(const std::string& assetId) const;
 };

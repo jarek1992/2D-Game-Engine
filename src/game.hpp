@@ -1,7 +1,9 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+
 #include "ecs.hpp"
+#include "assetStore.hpp"
 
 const int fps = 2;
 const  int milisecsPerFrame = 1000 / fps ;
@@ -15,7 +17,8 @@ private:
 
 	// Registry* registry
 	std::unique_ptr<Registry> registry;
-
+	// Asset Store
+	std::unique_ptr<assetStore> assetStore;
 
 public:
 	Game();

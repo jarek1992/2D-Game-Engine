@@ -6,6 +6,7 @@
 #include "movementSystem.hpp"
 #include "spriteComponent.hpp"
 #include "renderSystem.hpp"
+#include "assetStore.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -16,7 +17,7 @@ Game::Game() {
 	// Constructor implementation
 	isRunning = false;
 	registry = std::make_unique<Registry>();
-
+	assetStore = std::make_unique<assetStore>();
 	Logger::Log("Game object created!");
 }
 
@@ -105,17 +106,21 @@ void Game::Setup() {
 	registry->addSystem<movementSystem>();
 	registry->addSystem<renderSystem>();
 
+	// Load assets into the asset store
+	assetStore->addTexture("tank_blue", "./libs/assets/tank_top_blue.png");
+	assetStore->addTexture("tank_green", "./libs/assets/tank_top_green.png");
+
 	// Create entities and add components to them
 	Entity tank = registry->createEntity();
 	tank.addComponent<transformComponent>(glm::vec2(10.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.addComponent<rigidBodyComponent>(glm::vec2(50.0, 0.0));
-	tank.addComponent<spriteComponent>(10.0, 10.0);
+	tank.addComponent<spriteComponent>("tank_green", 10.0, 10.0);
 
 	// Create entities and add components to them
 	Entity helicopter = registry->createEntity();
 	helicopter.addComponent<transformComponent>(glm::vec2(20.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	helicopter.addComponent<rigidBodyComponent>(glm::vec2(0.0, 25.0));
-	helicopter.addComponent<spriteComponent>(1.0, 30.0);
+	helicopter.addComponent<spriteComponent>("tank_blue", 1.0, 30.0);
 }
 
 void Game::Update() {

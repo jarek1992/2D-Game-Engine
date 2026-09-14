@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <memory>
 
 #include "ecs.hpp"
 #include "assetStore.hpp"
@@ -18,7 +19,7 @@ private:
 	// Registry* registry
 	std::unique_ptr<Registry> registry;
 	// Asset Store
-	std::unique_ptr<assetStore> assetStore;
+	std::unique_ptr<AssetStore> assetStore;
 
 public:
 	Game();
@@ -33,5 +34,5 @@ public:
 	void Destroy();
 
 	int windowWidth = 0;
-	int windowHeight = 0;;
+	int windowHeight = 0;
 };

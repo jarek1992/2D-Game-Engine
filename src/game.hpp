@@ -6,7 +6,7 @@
 #include "ecs.hpp"
 #include "assetStore.hpp"
 
-const int fps = 2;
+const int fps = 60;
 const  int milisecsPerFrame = 1000 / fps ;
 
 class Game {
@@ -28,6 +28,7 @@ public:
 	void Initialize();
 	void Run();
 	void ProcessInput();
+	void LoadLevel(int level);
 	void Setup();
 	void Update();
 	void Render();

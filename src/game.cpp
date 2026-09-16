@@ -1,4 +1,4 @@
-#include "game.hpp"
+﻿#include "game.hpp"
 #include "assetStore.hpp"
 
 #include "logger.hpp"
@@ -13,6 +13,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
+#include <sstream>
+#include <fstream>
+#include <string>
 
 Game::Game() {
 	// Constructor implementation
@@ -102,7 +105,7 @@ void Game::ProcessInput() {
 	}
 }
 
-void Game::Setup() {
+void Game::LoadLevel(int level) {
 	// Add the systems to be proccessed in the game loop
 	registry->addSystem<movementSystem>();
 	registry->addSystem<renderSystem>();
@@ -110,18 +113,76 @@ void Game::Setup() {
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
 	assetStore->addTexture(renderer, "tank_green", "./libs/assets/tank_top_green.png");
+	assetStore->addTexture(renderer, "tilemap_image", "./libs/assets/tileset.png");
+
+	// Load the tilemap
+	int tileSize = 24;
+	double tileScale = 1.5;
+	int mapColumns = 20;
+	int mapRows = 20;
+
+	int tilesetColumns = 5;
+
+	std::fstream mapFile;
+	mapFile.open("./libs/assets/tileset.map");
+
+	if (!mapFile.is_open()) {
+		return;
+	}
+
+	for (int y = 0; y < mapRows; y++) {
+		std::string line;
+		if (!std::getline(mapFile, line)) { 
+			break;
+		}
+
+		std::stringstream ss(line);
+
+		for (int x = 0; x < mapColumns; x++) {
+			std::string strTileIndex;
+
+			if (!std::getline(ss, strTileIndex, ',')) { break; }
+			if (strTileIndex.empty()) { continue; }
+
+			int tileIndex = std::stoi(strTileIndex);
+
+			int srcRectX = (tileIndex % tilesetColumns) * tileSize;
+			int srcRectY = (tileIndex / tilesetColumns) * tileSize;
+
+			Entity tile = registry->createEntity();
+
+			tile.addComponent<transformComponent>(
+				glm::vec2(x * (tileSize * tileScale), y * (tileSize * tileScale)), 
+				glm::vec2(tileScale, tileScale), 
+				0.0
+			);
+
+			tile.addComponent<spriteComponent>(
+				"tilemap_image", 
+				tileSize, 
+				tileSize, 
+				srcRectX, 
+				srcRectY
+			);
+		}
+	}
+	mapFile.close();
 
 	// Create entities and add components to them
 	Entity tank = registry->createEntity();
-	tank.addComponent<transformComponent>(glm::vec2(10.0, 100.0), glm::vec2(0.05, 0.05), 0.0);
+	tank.addComponent<transformComponent>(glm::vec2(10.0, 10.0), glm::vec2(0.05, 0.05), 0.0);
 	tank.addComponent<rigidBodyComponent>(glm::vec2(0.0, 40.0));
 	tank.addComponent<spriteComponent>("tank_blue", 620, 691);
 
 	// Create entities and add components to them
 	Entity helicopter = registry->createEntity();
-	helicopter.addComponent<transformComponent>(glm::vec2(20.0, 50.0), glm::vec2(0.05, 0.05), 0.0);
+	helicopter.addComponent<transformComponent>(glm::vec2(10.0, 10.0), glm::vec2(0.05, 0.05), 0.0);
 	helicopter.addComponent<rigidBodyComponent>(glm::vec2(40.0, 0.0));
 	helicopter.addComponent<spriteComponent>("tank_green", 512.0, 512.0);
+}
+
+void Game::Setup() {
+	LoadLevel(1);
 }
 
 void Game::Update() {

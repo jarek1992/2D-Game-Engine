@@ -107,8 +107,8 @@ void Game::ProcessInput() {
 
 void Game::LoadLevel(int level) {
 	// Add the systems to be proccessed in the game loop
-	registry->addSystem<movementSystem>();
-	registry->addSystem<renderSystem>();
+	registry->addSystem<MovementSystem>();
+	registry->addSystem<RenderSystem>();
 
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
@@ -117,7 +117,7 @@ void Game::LoadLevel(int level) {
 
 	// Load the tilemap
 	int tileSize = 24;
-	double tileScale = 1.5;
+	double tileScale = 1.0;
 	int mapColumns = 20;
 	int mapRows = 20;
 
@@ -126,15 +126,11 @@ void Game::LoadLevel(int level) {
 	std::fstream mapFile;
 	mapFile.open("./libs/assets/tileset.map");
 
-	if (!mapFile.is_open()) {
-		return;
-	}
+	if (!mapFile.is_open()) { return; }
 
 	for (int y = 0; y < mapRows; y++) {
 		std::string line;
-		if (!std::getline(mapFile, line)) { 
-			break;
-		}
+		if (!std::getline(mapFile, line)) { break; }
 
 		std::stringstream ss(line);
 
@@ -151,16 +147,17 @@ void Game::LoadLevel(int level) {
 
 			Entity tile = registry->createEntity();
 
-			tile.addComponent<transformComponent>(
+			tile.addComponent<TransformComponent>(
 				glm::vec2(x * (tileSize * tileScale), y * (tileSize * tileScale)), 
 				glm::vec2(tileScale, tileScale), 
 				0.0
 			);
 
-			tile.addComponent<spriteComponent>(
+			tile.addComponent<SpriteComponent>(
 				"tilemap_image", 
 				tileSize, 
 				tileSize, 
+				0,
 				srcRectX, 
 				srcRectY
 			);
@@ -169,16 +166,16 @@ void Game::LoadLevel(int level) {
 	mapFile.close();
 
 	// Create entities and add components to them
-	Entity tank = registry->createEntity();
-	tank.addComponent<transformComponent>(glm::vec2(10.0, 10.0), glm::vec2(0.05, 0.05), 0.0);
-	tank.addComponent<rigidBodyComponent>(glm::vec2(0.0, 40.0));
-	tank.addComponent<spriteComponent>("tank_blue", 620, 691);
+	Entity tank_blue = registry->createEntity();
+	tank_blue.addComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(0.042, 0.042), -90.0);
+	tank_blue.addComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
+	tank_blue.addComponent<SpriteComponent>("tank_blue", 620, 691, 1);
 
 	// Create entities and add components to them
-	Entity helicopter = registry->createEntity();
-	helicopter.addComponent<transformComponent>(glm::vec2(10.0, 10.0), glm::vec2(0.05, 0.05), 0.0);
-	helicopter.addComponent<rigidBodyComponent>(glm::vec2(40.0, 0.0));
-	helicopter.addComponent<spriteComponent>("tank_green", 512.0, 512.0);
+	Entity tank_green = registry->createEntity();
+	tank_green.addComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(0.05, 0.05), 0.0);
+	tank_green.addComponent<RigidBodyComponent>(glm::vec2(40.0, 0.0));
+	tank_green.addComponent<SpriteComponent>("tank_green", 512.0, 512.0, 1);
 }
 
 void Game::Setup() {
@@ -203,7 +200,7 @@ void Game::Update() {
 	registry->Update();
 
 	// Invoke all the system that need to update
-	registry->getSystem<movementSystem>().Update(deltaTime);
+	registry->getSystem<MovementSystem>().Update(deltaTime);
 }
 
 void Game::Render() {
@@ -212,7 +209,7 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 
 	// Invoke all the system that need to render
-	registry->getSystem<renderSystem>().Update(renderer, assetStore);
+	registry->getSystem<RenderSystem>().Update(renderer, assetStore);
 
 	SDL_RenderPresent(renderer);
 }

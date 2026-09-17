@@ -4,19 +4,19 @@
 #include "transformComponent.hpp"
 #include "rigidBodyComponent.hpp"
 
-class movementSystem : public System {
+class MovementSystem : public System {
 	public:
-		movementSystem() {
-			requireComponent<transformComponent>();
-			requireComponent<rigidBodyComponent>();
+		MovementSystem() {
+			requireComponent<TransformComponent>();
+			requireComponent<RigidBodyComponent>();
 		}
 
 		void Update(double deltaTime) {
-			// Update all entities with a transformComponent
+			// Update all entities with a TransformComponent
 			for(auto entity : getSystemEntities()) {
 				// Update the entity's position based on its velocity
-				auto& transform = entity.getComponent<transformComponent>();
-				const auto rigidBody = entity.getComponent<rigidBodyComponent>();
+				auto& transform = entity.getComponent<TransformComponent>();
+				const auto rigidBody = entity.getComponent<RigidBodyComponent>();
 
 				transform.position.x += rigidBody.velocity.x * deltaTime;
 				transform.position.y += rigidBody.velocity.y * deltaTime;

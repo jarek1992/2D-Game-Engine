@@ -6,14 +6,14 @@
 
 #include <SDL2/SDL.h>
 
-class RenderColliderComponent : public System {
+class RenderColliderSystem : public System {
 	public:
 		RenderColliderSystem() {
 			requireComponent<TransformComponent>();
 			requireComponent<BoxColliderComponent>();
 		}
 
-		void Update(SDL_Renderer * render) {
+		void Update(SDL_Renderer * renderer) {
 			for (auto entity : getSystemEntities()) {
 				const auto transform = entity.getComponent<TransformComponent>();
 				const auto collider = entity.getComponent<BoxColliderComponent>();

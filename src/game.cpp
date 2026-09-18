@@ -12,6 +12,7 @@
 #include "animationSystem.hpp"
 #include "boxColliderComponent.hpp"
 #include "collisionSystem.hpp"
+#include "renderColliderSystem.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -24,6 +25,7 @@
 Game::Game() {
 	// Constructor implementation
 	isRunning = false;
+	isDebugging = false;
 	registry = std::make_unique<Registry>();
 	assetStore = std::make_unique<AssetStore>();
 	Logger::Log("Game object created!");
@@ -104,6 +106,9 @@ void Game::ProcessInput() {
 				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
 					isRunning = false;
 				}
+				if (sdlEvent.key.keysym.sym == SDLK_d) {
+					isDebugging = !isDebugging;
+				}
 				break;
 		}
 	}
@@ -115,6 +120,7 @@ void Game::LoadLevel(int level) {
 	registry->addSystem<RenderSystem>();
 	registry->addSystem<AnimationSystem>();
 	registry->addSystem<CollisionSystem>();
+	registry->addSystem<RenderColliderSystem>();
 
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
@@ -228,7 +234,9 @@ void Game::Render() {
 
 	// Invoke all the system that need to render
 	registry->getSystem<RenderSystem>().Update(renderer, assetStore);
-
+	if (isDebugging) {
+		registry->getSystem<RenderColliderSystem>().Update(renderer);
+	}
 	SDL_RenderPresent(renderer);
 }
 

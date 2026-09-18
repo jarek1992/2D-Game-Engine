@@ -11,6 +11,7 @@
 #include "animationComponent.hpp"
 #include "animationSystem.hpp"
 #include "boxColliderComponent.hpp"
+#include "collisionSystem.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -113,6 +114,7 @@ void Game::LoadLevel(int level) {
 	registry->addSystem<MovementSystem>();
 	registry->addSystem<RenderSystem>();
 	registry->addSystem<AnimationSystem>();
+	registry->addSystem<CollisionSystem>();
 
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
@@ -216,7 +218,9 @@ void Game::Update() {
 
 	// Invoke all the system that need to update
 	registry->getSystem<MovementSystem>().Update(deltaTime);
-	registry->getSystem<AnimationSystem>().Update();
+	registry->getSystem<AnimationSystem>().Update(); 
+	registry->getSystem<CollisionSystem>().Update();
+
 }
 
 void Game::Render() {

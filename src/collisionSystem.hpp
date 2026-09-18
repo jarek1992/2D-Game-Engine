@@ -34,18 +34,19 @@ class CollisionSystem : public System {
 
 					// Check the collision between entityA and entityB
 					bool isColliding = aabbCheckCollison(
-						aTransform.position.x,
-						aTransform.position.y,
+						aTransform.position.x + aCollider.offset.x,
+						aTransform.position.y + aCollider.offset.y,
 						aCollider.width,
 						aCollider.height,
-						bTransform.position.x,
-						bTransform.position.y,
+						bTransform.position.x + bCollider.offset.x,
+						bTransform.position.y + bCollider.offset.y,
 						bCollider.width,
 						bCollider.height
 					);
 
 					if (isColliding) {
-						Logger::Log("Entity " + std::to_string(a.getId()) + " is colliding with entity " + std::to_string(b.getId()));
+						Logger::Log("Entity " + std::to_string(entityA.getId()) + " is colliding with entity " + std::to_string(entityB.getId()));
+						
 						// EVENT HAPPENING WHEN THEY COLLIDE WITH EACH OTHER
 					}
 				}

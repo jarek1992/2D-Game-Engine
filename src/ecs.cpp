@@ -29,17 +29,22 @@ const Signature& System::getComponentSignature() const {
 Entity Registry::createEntity() {
 	int entityId;
 
-	// Assign a new entity ID, reusing IDs from the pool if available
-	entityId = numEntities++;
+	if (freeIds.empty()) {
+		// If there are no free ids to be reused
+		entityId = numEntities++;
+		// Resize entityComponentSignatures vector
+		if (entityId >= entityComponentSignatures.size()) {
+			entityComponentSignatures.resize(entityId + 1);
+		}
+	} else {
+		// Reused  and id from the list of previously removed entities
+		entityId = freeIds.front();
+		freeIds.pop_front();
+	}
 
 	Entity entity(entityId);
 	entity.registry = this;
 	entitiesToAdd.insert(entity);
-
-	// Make sure entityComponentSignatures has enough space for the new entity
-	if(entityId >= entityComponentSignatures.size()) {
-		entityComponentSignatures.resize(entityId + 1);
-	}
 
 	Logger::Log("Entity created with ID: " + std::to_string(entityId));
 

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <set>
+#include <deque>
 #include <memory>
 
 const unsigned int MAX_COMPONENTS = 32;
@@ -159,6 +160,9 @@ class Registry {
 		std::set<Entity> entitiesToAdd;
 		std::set<Entity> entitiesToRemove;
 
+		// List of free entity ids that has beeen removed
+		std::deque<int> freeIds;
+
 	public:
 		Registry() {
 			Logger::Log("Registry constructor created.");
@@ -172,6 +176,7 @@ class Registry {
 
 		// Entity management functions
 		Entity createEntity();
+		void killEntity(Entity entity);
 
 		//Component management functions
 		template <typename TComponent, typename ...TArgs> void addComponent(Entity entity, TArgs&& ...args);
@@ -187,6 +192,8 @@ class Registry {
 
 		// Helper function to add an entity to all systems that it qualifies for based on its component signature.
 		void addEntityToSystems(Entity entity);
+
+		void removeEntityFromSystems(Entity entity);
 };
 
 template<typename tComponent>

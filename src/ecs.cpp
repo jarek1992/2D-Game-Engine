@@ -46,6 +46,12 @@ Entity Registry::createEntity() {
 	return entity;
 }
 
+void Registry::killEntity(Entity entity) {
+	entitiesToRemove.insert(entity);
+
+
+}
+
 void Registry::addEntityToSystems(Entity entity) {
 	const auto entityId = entity.getId();
 
@@ -63,10 +69,27 @@ void Registry::addEntityToSystems(Entity entity) {
 	}
 }
 
+void Registry::removeEntityFromSystems(Entity entity) {
+	for (auto system : systems) {
+		system.second->removeEntityFromSystem(entity);
+	}
+}
+
 void Registry::Update() {
-	// Add new entities that are waiting to be created tyo the active systems
+	// Proccessing the entities that are waiting to be created to the active systems
 	for (auto entity : entitiesToAdd) {
 		addEntityToSystems(entity);
 	}
 	entitiesToAdd.clear();
+
+	// Proccess the entities that are waiting to be killed from the active Systems
+	for (auto entity : entitiesToRemove) {
+		removeEntityFromSystems(entity);
+
+		entityComponentSignatures[entity.getId()].reset();
+		
+		// Make the entity available to be reused
+		freeIds.push_back(entity.getId());
+	}
+	entitiesToRemove.clear();
 }

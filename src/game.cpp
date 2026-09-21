@@ -197,6 +197,8 @@ void Game::LoadLevel(int level) {
 	tank_green.addComponent<RigidBodyComponent>(glm::vec2(-40.0, 0.0));
 	tank_green.addComponent<SpriteComponent>("tank_green", 150, 150, 1);
 	tank_green.addComponent<BoxColliderComponent>(150, 150);
+
+
 }
 
 void Game::Setup() {

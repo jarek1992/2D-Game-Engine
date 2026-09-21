@@ -39,6 +39,7 @@ class Entity {
 	public:
 		Entity(int id) : id(id) {};
 		Entity(const Entity& entity) = default;
+		void destroy();
 		int getId() const;
 
 		// Overload the equality operator to compare entities based on their IDs.
@@ -190,9 +191,8 @@ class Registry {
 		template <typename TSystem> bool hasSystem() const;
 		template <typename TSystem> TSystem& getSystem() const;
 
-		// Helper function to add an entity to all systems that it qualifies for based on its component signature.
+		// Add and remove enties from their systems
 		void addEntityToSystems(Entity entity);
-
 		void removeEntityFromSystems(Entity entity);
 };
 

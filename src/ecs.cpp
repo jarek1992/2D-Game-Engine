@@ -7,6 +7,10 @@ int Entity::getId() const {
 	return id;
 }
 
+void Entity::destroy() {
+	registry->killEntity(*this);
+}
+
 void System::addEntityToSystem(Entity entity) {
 	entities.push_back(entity);
 }
@@ -53,8 +57,7 @@ Entity Registry::createEntity() {
 
 void Registry::killEntity(Entity entity) {
 	entitiesToRemove.insert(entity);
-
-
+	Logger::Log("Entity " + std::to_string(entity.getId()) + " was killed");
 }
 
 void Registry::addEntityToSystems(Entity entity) {

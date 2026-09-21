@@ -22,6 +22,8 @@ private:
 	// Asset Store
 	std::unique_ptr<AssetStore> assetStore;
 
+	std::unique_ptr<EventBus> eventBus;
+
 public:
 	Game();
 	~Game();

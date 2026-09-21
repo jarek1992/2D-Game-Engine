@@ -21,7 +21,7 @@ private:
 	std::unique_ptr<Registry> registry;
 	// Asset Store
 	std::unique_ptr<AssetStore> assetStore;
-
+	// 
 	std::unique_ptr<EventBus> eventBus;
 
 public:

@@ -6,14 +6,35 @@
 #include <typeindex>
 #include <list>
 
-class iEventCallBack {
-
+class Event {
+	public:
+		Event() = default;
 };
 
-template <typename TEvent>
+class iEventCallBack {
+	public:
+		virtual ~iEventCallBack() = default;
+
+		void execute(Event& e) {
+			call(e);
+		}
+
+	private:
+		virtual void call(Event& e) = 0;
+};
+
+template <typename TOwner, typename TEvent>
 class EventCallBack : public iEventCallBack{
 	// Callback function pointer that needs to be invoked
+	private:
+		typedef void (TOwner::* CallBackFunction)(TEvent&);
 
+		TOwner* onwerInstance;
+		CallBackFunction callBackFunction;
+
+		virtual void call(Event& e) override {
+			std::invoke(callBackFunction, onwerInstance, static_cast<TEvent&>(e));
+		}
 };
 
 typedef std::list<std::unique_ptr<iEventCallBack>> HandlerList;

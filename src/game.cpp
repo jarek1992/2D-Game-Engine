@@ -130,7 +130,7 @@ void Game::LoadLevel(int level) {
 
 	// Load the tilemap
 	int tileSize = 24;
-	double tileScale = 1.0;
+	double tileScale = 1.25;
 	int mapColumns = 20;
 	int mapRows = 20;
 
@@ -180,25 +180,23 @@ void Game::LoadLevel(int level) {
 
 	// Create entities and add components to them
 	Entity helicopter = registry->createEntity();
-	helicopter.addComponent<TransformComponent>(glm::vec2(0.0, 200.0), glm::vec2(0.2, 0.2), 0);
+	helicopter.addComponent<TransformComponent>(glm::vec2(0.0, 200.0), glm::vec2(0.35, 0.35), 0);
 	helicopter.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
 	helicopter.addComponent<SpriteComponent>("helicopter", 150, 150, 1);
 	helicopter.addComponent<AnimationComponent>(3, 20, true);
 
 	Entity tank_blue = registry->createEntity();
-	tank_blue.addComponent<TransformComponent>(glm::vec2(50.0, 400.0), glm::vec2(0.1, 0.1), -90.0);
+	tank_blue.addComponent<TransformComponent>(glm::vec2(50.0, 400.0), glm::vec2(0.2, 0.2), -90.0);
 	tank_blue.addComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
 	tank_blue.addComponent<SpriteComponent>("tank_blue", 150, 150, 1);
 	tank_blue.addComponent<BoxColliderComponent>(150, 150);
 
 	// Create entities and add components to them
 	Entity tank_green = registry->createEntity();
-	tank_green.addComponent<TransformComponent>(glm::vec2(600.0, 400.0), glm::vec2(0.1, 0.1), 90.0);
+	tank_green.addComponent<TransformComponent>(glm::vec2(600.0, 400.0), glm::vec2(0.2, 0.2), 90.0);
 	tank_green.addComponent<RigidBodyComponent>(glm::vec2(-40.0, 0.0));
 	tank_green.addComponent<SpriteComponent>("tank_green", 150, 150, 1);
 	tank_green.addComponent<BoxColliderComponent>(150, 150);
-
-
 }
 
 void Game::Setup() {

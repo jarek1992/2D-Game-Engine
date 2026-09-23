@@ -26,6 +26,14 @@ class iEventCallBack {
 template <typename TOwner, typename TEvent>
 class EventCallBack : public iEventCallBack{
 	// Callback function pointer that needs to be invoked
+	public:
+		EventCallBack(TOwner* ownerInstance, CallBackFunction callBackFunction) {
+			this->onwerInstance = onwerInstance;
+			this->callBackFunction = callBackFunction;
+		}
+
+		virtual ~iEventCallBack() override = default;
+
 	private:
 		typedef void (TOwner::* CallBackFunction)(TEvent&);
 
@@ -53,8 +61,13 @@ class EventBus {
 		// Subscribie to an event type  <T>
 		// In our implementation, a listener subscribes to an event
 		// example: eventBus->subscribeToEvent<CollisionEvent>(&Game::onCollision);
-		void subscribeToEvent<>() {
-			//........
+		template <typename TEvent, typename TOwner>
+		void subscribeToEvent(TOwner* ownerInstance, void (TOwner::*callBackFunction)(TEvent&)) {
+			if (!subscribers[typeid(TEvent)].get()) {
+				suscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
+			}
+			auto suscriber = std::make_unique<EventCallBack<TOwner, TEvent>>(ownerInstance, callBackFunction);
+			subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
 		}
 
 		// Emit an event of type <T>
@@ -62,6 +75,6 @@ class EventBus {
 		// we go ahead and execute all the listener callback functions
 		// example: eventBus->emitEvent<CollisionEvent>(player, enemy);
 		void emitEvent<>() {
-			//........
+			
 		}
 };

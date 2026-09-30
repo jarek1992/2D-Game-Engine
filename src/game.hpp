@@ -5,6 +5,7 @@
 
 #include "ecs.hpp"
 #include "assetStore.hpp"
+#include "eventBus.hpp"
 
 const int fps = 60;
 const  int milisecsPerFrame = 1000 / fps ;
@@ -22,7 +23,7 @@ private:
 	// Asset Store
 	std::unique_ptr<AssetStore> assetStore;
 	// 
-	//std::unique_ptr<EventBus> eventBus;
+	std::unique_ptr<EventBus> eventBus;
 
 public:
 	Game();

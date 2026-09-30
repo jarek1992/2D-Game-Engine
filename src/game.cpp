@@ -13,6 +13,7 @@
 #include "boxColliderComponent.hpp"
 #include "collisionSystem.hpp"
 #include "renderColliderSystem.hpp"
+#include "damageSystem.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -28,6 +29,7 @@ Game::Game() {
 	isDebugging = false;
 	registry = std::make_unique<Registry>();
 	assetStore = std::make_unique<AssetStore>();
+	eventBus = std::make_unique<EventBus>();
 	Logger::Log("Game object created!");
 }
 
@@ -121,6 +123,7 @@ void Game::LoadLevel(int level) {
 	registry->addSystem<AnimationSystem>();
 	registry->addSystem<CollisionSystem>();
 	registry->addSystem<RenderColliderSystem>();
+	registry->addSystem<DamageSystem>();
 
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
@@ -217,13 +220,17 @@ void Game::Update() {
 	// Calculate the time elapsed since the last frame
 	millisecsPrevFrame = SDL_GetTicks();
 
+	// Perform the subscription of the events for all systems
+	registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
+
 	// Update the registry to process the entities that are waiting to be added/deleted to the systems
 	registry->Update();
 
 	// Invoke all the system that need to update
 	registry->getSystem<MovementSystem>().Update(deltaTime);
 	registry->getSystem<AnimationSystem>().Update(); 
-	registry->getSystem<CollisionSystem>().Update();
+	registry->getSystem<CollisionSystem>().Update(eventBus);
+	
 
 }
 

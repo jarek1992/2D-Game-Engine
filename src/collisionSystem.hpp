@@ -1,8 +1,10 @@
 #pragma once
 
 #include "ecs.hpp"
+#include "eventBus.hpp"
 #include "boxColliderComponent.hpp"
 #include "transformComponent.hpp"
+#include "collisionEvent.hpp"
 
 class CollisionSystem : public System {
 	public:
@@ -11,7 +13,7 @@ class CollisionSystem : public System {
 			requireComponent<BoxColliderComponent>();
 		}
 
-		void Update() {
+		void Update(std::unique_ptr<EventBus>& eventBus) {
 			auto entities = getSystemEntities();
 
 			// Loop all the entities that syste is interested in
@@ -47,9 +49,7 @@ class CollisionSystem : public System {
 					if (isColliding) {
 						Logger::Log("Entity " + std::to_string(entityA.getId()) + " is colliding with entity " + std::to_string(entityB.getId()));
 
-						// EVENT HAPPENING
-						//entityA.destroy();
-						//entityB.destroy();
+						eventBus->emitEvent<CollisionEvent>(a, b);
 					}
 				}
 			}

@@ -19,20 +19,15 @@ class CollisionSystem : public System {
 			// Loop all the entities that syste is interested in
 			for (auto i = entities.begin(); i != entities.end(); i++) {
 				Entity entityA = *i;
-				auto aTransform = entityA.getComponent<TransformComponent>();
-				auto aCollider = entityA.getComponent<BoxColliderComponent>();
+				const auto& aTransform = entityA.getComponent<TransformComponent>();
+				const auto& aCollider = entityA.getComponent<BoxColliderComponent>();
 				
 				// Loop all the entities towards the rights (from i) side that still need to be checked
-				for (auto j = i; j != entities.end(); j++) {
+				for (auto j = std::next(i); j != entities.end(); ++j) {
 					Entity entityB = *j;
 
-					// Bypass if we are trying to test the same entity
-					if (entityA == entityB) {
-						continue;
-					}
-
-					auto bTransform = entityB.getComponent<TransformComponent>();
-					auto bCollider = entityB.getComponent<BoxColliderComponent>();
+					const auto& bTransform = entityB.getComponent<TransformComponent>();
+					const auto& bCollider = entityB.getComponent<BoxColliderComponent>();
 
 					// Check the collision between entityA and entityB
 					bool isColliding = aabbCheckCollison(
@@ -48,8 +43,8 @@ class CollisionSystem : public System {
 
 					if (isColliding) {
 						Logger::Log("Entity " + std::to_string(entityA.getId()) + " is colliding with entity " + std::to_string(entityB.getId()));
+						eventBus->emitEvent<CollisionEvent>(entityA, entityB);
 
-						eventBus->emitEvent<CollisionEvent>(a, b);
 					}
 				}
 			}

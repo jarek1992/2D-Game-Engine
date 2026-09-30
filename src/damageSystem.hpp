@@ -4,6 +4,7 @@
 #include "boxColliderComponent.hpp"
 #include "eventBus.hpp"
 #include "collisionEvent.hpp"
+#include "logger.hpp"
 
 
 class DamageSystem : public System {
@@ -17,7 +18,13 @@ class DamageSystem : public System {
 		}
 
 		void onCollision(CollisionEvent& event) {
-
+			Logger::Log("Damage system received an event collision between entities " 
+				+ std::to_string(event.a.getId()) 
+				+ " and " 
+				+ std::to_string(event.b.getId())
+			);
+			event.a.destroy();
+			event.b.destroy();
 		}
 
 		void Update() {

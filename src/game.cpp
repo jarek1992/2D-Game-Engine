@@ -220,6 +220,9 @@ void Game::Update() {
 	// Calculate the time elapsed since the last frame
 	millisecsPrevFrame = SDL_GetTicks();
 
+	// Reset all event handlers for the current frame
+	eventBus->reset();
+
 	// Perform the subscription of the events for all systems
 	registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
 
@@ -230,8 +233,6 @@ void Game::Update() {
 	registry->getSystem<MovementSystem>().Update(deltaTime);
 	registry->getSystem<AnimationSystem>().Update(); 
 	registry->getSystem<CollisionSystem>().Update(eventBus);
-	
-
 }
 
 void Game::Render() {

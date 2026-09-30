@@ -21,16 +21,8 @@ class iEventCallBack {
 
 template <typename TOwner, typename TEvent>
 class EventCallBack : public iEventCallBack{
-	// Callback function pointer that needs to be invoked
-	public:
-		EventCallBack(TOwner* ownerInstance, CallBackFunction callBackFunction) {
-			this->onwerInstance = onwerInstance;
-			this->callBackFunction = callBackFunction;
-		}
-
-		virtual ~iEventCallBack() override = default;
-
 	private:
+		// Definbe alias 
 		typedef void (TOwner::* CallBackFunction)(TEvent&);
 
 		TOwner* onwerInstance;
@@ -39,6 +31,14 @@ class EventCallBack : public iEventCallBack{
 		virtual void call(Event& e) override {
 			std::invoke(callBackFunction, onwerInstance, static_cast<TEvent&>(e));
 		}
+	// Callback function pointer that needs to be invoked
+	public:
+		EventCallBack(TOwner* ownerInstance, CallBackFunction callBackFunction) {
+			this->onwerInstance = onwerInstance;
+			this->callBackFunction = callBackFunction;
+		}
+
+		virtual ~EventCallBack() override = default;
 };
 
 typedef std::list<std::unique_ptr<iEventCallBack>> HandlerList;
@@ -54,15 +54,22 @@ class EventBus {
 		~EventBus() {
 			Logger::Log("EventBus decstructor called!");
 		}
+
+		// Clears the subscriber list
+		void reset() {
+			subscribers.clear();
+		}
+
+
 		// Subscribie to an event type  <T>
 		// In our implementation, a listener subscribes to an event
 		// example: eventBus->subscribeToEvent<CollisionEvent>(this, &Game::onCollision);
 		template <typename TEvent, typename TOwner>
 		void subscribeToEvent(TOwner* ownerInstance, void (TOwner::*callBackFunction)(TEvent&)) {
 			if (!subscribers[typeid(TEvent)].get()) {
-				suscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
+				subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
 			}
-			auto suscriber = std::make_unique<EventCallBack<TOwner, TEvent>>(ownerInstance, callBackFunction);
+			auto subscriber = std::make_unique<EventCallBack<TOwner, TEvent>>(ownerInstance, callBackFunction);
 			subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
 		}
 
@@ -76,7 +83,7 @@ class EventBus {
 			if (handlers) {
 				for (auto it = handlers->begin(); it != handlers->end(); it++) {
 					auto handler = it->get();
-					TEvent event(std::forward<TArg>(args)...);
+					TEvent event(std::forward<TArgs>(args)...);
 					handler->execute(event);
 				}
 			}

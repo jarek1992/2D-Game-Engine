@@ -14,6 +14,7 @@
 #include "collisionSystem.hpp"
 #include "renderColliderSystem.hpp"
 #include "damageSystem.hpp"
+#include "keyboardControlSystem.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -111,6 +112,7 @@ void Game::ProcessInput() {
 				if (sdlEvent.key.keysym.sym == SDLK_d) {
 					isDebugging = !isDebugging;
 				}
+				eventBus->emitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
 				break;
 		}
 	}
@@ -124,6 +126,7 @@ void Game::LoadLevel(int level) {
 	registry->addSystem<CollisionSystem>();
 	registry->addSystem<RenderColliderSystem>();
 	registry->addSystem<DamageSystem>();
+	registry->addSystem<KeyboardControlSystem>();
 
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
@@ -225,6 +228,7 @@ void Game::Update() {
 
 	// Perform the subscription of the events for all systems
 	registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
+	registry->getSystem<KeyboardControlSystem>().subscribeToEvents(eventBus);
 
 	// Update the registry to process the entities that are waiting to be added/deleted to the systems
 	registry->Update();

@@ -15,6 +15,7 @@
 #include "renderColliderSystem.hpp"
 #include "damageSystem.hpp"
 #include "keyboardControlSystem.hpp"
+#include "keyboardControlledComponent.hpp"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -112,7 +113,9 @@ void Game::ProcessInput() {
 				if (sdlEvent.key.keysym.sym == SDLK_d) {
 					isDebugging = !isDebugging;
 				}
-				eventBus->emitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
+				if (eventBus) {
+					eventBus->emitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
+				}
 				break;
 		}
 	}
@@ -128,11 +131,16 @@ void Game::LoadLevel(int level) {
 	registry->addSystem<DamageSystem>();
 	registry->addSystem<KeyboardControlSystem>();
 
+	// Perform the subscription of the events for all systems
+	registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
+	registry->getSystem<KeyboardControlSystem>().subscribeToEvents(eventBus);
+
 	// Load assets into the asset store
 	assetStore->addTexture(renderer, "tank_blue", "./libs/assets/tank_top_blue.png");
-	assetStore->addTexture(renderer, "tank_green", "./libs/assets/tank_top_green.png");
+	assetStore->addTexture(renderer, "tank_green", "./libs/assets/tank_sprite_sheets.png");
 	assetStore->addTexture(renderer, "helicopter", "./libs/assets/helicopter.png");
 	assetStore->addTexture(renderer, "tilemap_image", "./libs/assets/tileset.png");
+	assetStore->addTexture(renderer, "chopper", "./libs/assets/chopper_spritesheet.png");
 
 	// Load the tilemap
 	int tileSize = 24;
@@ -198,11 +206,12 @@ void Game::LoadLevel(int level) {
 	tank_blue.addComponent<BoxColliderComponent>(150, 150);
 
 	// Create entities and add components to them
-	Entity tank_green = registry->createEntity();
-	tank_green.addComponent<TransformComponent>(glm::vec2(600.0, 400.0), glm::vec2(0.2, 0.2), 90.0);
-	tank_green.addComponent<RigidBodyComponent>(glm::vec2(-40.0, 0.0));
-	tank_green.addComponent<SpriteComponent>("tank_green", 150, 150, 1);
-	tank_green.addComponent<BoxColliderComponent>(150, 150);
+	Entity chopper = registry->createEntity();
+	chopper.addComponent<TransformComponent>(glm::vec2(10.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	chopper.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+	chopper.addComponent<SpriteComponent>("chopper", 32, 32, 1);
+	chopper.addComponent<AnimationComponent>(2, 15, true);
+	chopper.addComponent<KeyboardControlledComponent>(glm::vec2(0, -20), glm::vec2(20, 0), glm::vec2(0, 20), glm::vec2(-20, 0));
 }
 
 void Game::Setup() {
@@ -225,10 +234,6 @@ void Game::Update() {
 
 	// Reset all event handlers for the current frame
 	eventBus->reset();
-
-	// Perform the subscription of the events for all systems
-	registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
-	registry->getSystem<KeyboardControlSystem>().subscribeToEvents(eventBus);
 
 	// Update the registry to process the entities that are waiting to be added/deleted to the systems
 	registry->Update();
